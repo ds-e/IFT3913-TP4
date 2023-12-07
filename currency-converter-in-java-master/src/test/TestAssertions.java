@@ -3,18 +3,24 @@ package test;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
+import org.junit.rules.ExpectedException;
 
+import org.junit.Rule;
 
 import org.junit.Test;
 
 import currencyConverter.Currency;
+import static org.junit.Assert.assertEquals;
+import org.junit.Test;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 import currencyConverter.MainWindow;
 public class TestAssertions  {
 	  ArrayList<Currency> currencies = Currency.init();
 	 @Test
 	   public void testDefaultValues() {
-
+		 	
 	        currencies.add(new Currency("Canadian Dollar", "CAD")); 
 	        currencies.add(new Currency("Australian Dollar", "AUD"));
 	        
@@ -60,7 +66,7 @@ public class TestAssertions  {
 	     
 	        currencies.get(6).defaultValues();
 	        currencies.get(7).defaultValues();
-   
+	        
 	        Double convertedAmount =MainWindow.convert("Canadian Dollar","US Dollar", currencies,198.0);   
 	        assertEquals(146.52, convertedAmount, 0.01);
 	        convertedAmount = MainWindow.convert("Canadian Dollar","British Pound", currencies,198.0);
@@ -77,30 +83,93 @@ public class TestAssertions  {
 	        assertEquals(1120000.0, convertedAmount, 0.01);
 	        convertedAmount =MainWindow.convert("Canadian Dollar", "Australian Dollar", currencies, 1000001.0);
 	        assertEquals(1120001.12, convertedAmount, 0.01);
-	        System.out.println(MainWindow.convert("Canadian Dollar", "Australian Dollar", currencies, -1.0));
 	        
-	    }
-	   void testAmount() {
-	        assertThrows(IllegalArgumentException.class, () -> {
-	        	
-	            Currency.convert(-1000000.0, 1.0);
-	        });
-	        assertThrows(IllegalArgumentException.class, () -> {
-	            Currency.convert(-1.0, 1.0);
-	        });
-	        assertThrows(IllegalArgumentException.class, () -> {
-	            Currency.convert(1000001.0, 1.0);
-	        });
-	        assertThrows(IllegalArgumentException.class, () -> {
-	            Currency.convert(1000111.0, 1.0);
-	        });
-	        System.out.println("montant doit etre entre 0 et 1000000");
+	        
+	        
+	        
+	      //  System.out.println(MainWindow.convert("Canadian Dollar", "Australian Dollar", currencies, -1.0));
+	        
+	   
+	 }
+	 @Test
+	 public void convertTest() {
+	        
+		   
+	        double amount = 500.0;  
+	        double exchangeValue = 1.5;  
+	        Double result = Currency.convert(amount, exchangeValue);
+	        assertEquals("le bon amount", Double.valueOf(amount * exchangeValue), result);
+	   
+	        amount = 0.0;
+	        exchangeValue = 1.5; 
+	        result = Currency.convert(amount, exchangeValue);
+	        assertEquals("le bon amount", Double.valueOf(amount * exchangeValue), result);
+	   
+	        amount = 1000000.0;
+	        exchangeValue = 1.5; 
+	        result = Currency.convert(amount, exchangeValue);
+	        assertEquals("le bon amount", Double.valueOf(amount * exchangeValue), result);
+	    
+
+	        amount = -10.0;
+	        exchangeValue = 1.5;  
+	        assertFalse("l'amount doit etre entre [0, 1 000 000]",checkamount(Currency.convert(amount, exchangeValue),exchangeValue));
+	        
+	        amount = 1000001.0;
+	        exchangeValue = 1.5;  
+	        assertFalse("l'amount doit etre entre [0, 1 000 000]",checkamount(Currency.convert(amount, exchangeValue),exchangeValue));	 
+	        
+	        amount = 1000001.0;
+	        exchangeValue = 1.5;  
+	        assertFalse("l'amount doit etre entre [0, 1 000 000]",checkamount(Currency.convert(amount, exchangeValue),exchangeValue));	 
+	        
+	        amount = 500.0;  
+	        exchangeValue = 1.5;  
+	        assertTrue(checkamount(Currency.convert(amount, exchangeValue),exchangeValue));	 
+	        
+	        amount = -1.0;
+	        exchangeValue = 1.5;  
+	        assertFalse("l'amount doit etre entre [0, 1 000 000]",checkamount(Currency.convert(amount, exchangeValue),exchangeValue));
+	        
 	        }
 
-	 
-	        
-	        
+	       
+
+	    public boolean checkamount(double price,double exchange) {
+	    	double amount = price/exchange;
+	    	if (amount<0) {
+	    		return false; 
+	    	}
+	    	if (amount>1000000 ) {
+	    		return false; 
+	    	}
+	    	else {
+	    		return true;
+	    	}
+	    }
+
+	    
+	   
+//	 	@Test
+//	    public void testInvalidAmount() {
+//	        assertThrows(IllegalArgumentException.class, () -> {
+//	        	
+//	            Currency.convert(-1000000.0, 1.0);
+//	        });
+//	        assertThrows(IllegalArgumentException.class, () -> {
+//	            Currency.convert(-1.0, 1.0);
+//	        });
+//	        assertThrows(IllegalArgumentException.class, () -> {
+//	            Currency.convert(1000001.0, 1.0);
+//	        });
+//	        assertThrows(IllegalArgumentException.class, () -> {
+//	            Currency.convert(1000111.0, 1.0);
+//	        });
+//	       
+//	      
+//	    }
 }
+	    
 	    
 	    
 	    

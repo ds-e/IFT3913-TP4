@@ -19,20 +19,11 @@ import currencyConverter.MainWindow;
 public class TestAssertions  {
 	  ArrayList<Currency> currencies = Currency.init();
 	 @Test
-	   public void testDefaultValues() {
-		 	
+	   public void testMainConvert() {
+		 	//ajouter le dollar canadian et l'australian
 	        currencies.add(new Currency("Canadian Dollar", "CAD")); 
 	        currencies.add(new Currency("Australian Dollar", "AUD"));
-	        
-//	        Currency currency1 = new Currency("US Dollar", "USD");
-//	        Currency currency2 =new Currency("Euro", "EUR") ;
-//	        Currency currency3 =new Currency("British Pound", "GBP") ;
-//	        Currency currency4 =new Currency("Swiss Franc", "CHF") ;
-//	        Currency currency7 = new Currency("Chinese Yuan Renminbi", "CNY") ;
-//		    Currency currency8= new Currency("Japanese Yen", "JPY") ;
-//	        Currency currency5 =new Currency("Canadian Dollar", "CAD") ;
-//	        Currency currency6 =new Currency("Australian Dollar ", "AUD") ;
-//	     
+
 	        assertTrue(currencies.get(0).getName()=="US Dollar");
 	        assertTrue(currencies.get(1).getName()=="Euro");
 	        assertTrue(currencies.get(2).getName()=="British Pound");
@@ -41,7 +32,8 @@ public class TestAssertions  {
 	        assertTrue(currencies.get(5).getName()=="Japanese Yen");
 	        assertTrue(currencies.get(6).getName()=="Canadian Dollar");
 	        assertTrue(currencies.get(7).getName()=="Australian Dollar");
-	      	     
+	      	
+	        //ajouter l'exchange value
 	        currencies.get(6).setExchangeValues("USD", 0.74);
 	        currencies.get(6).setExchangeValues("GBP", 0.58);
 	        currencies.get(6).setExchangeValues("CHF", 0.64);
@@ -67,6 +59,12 @@ public class TestAssertions  {
 	        currencies.get(6).defaultValues();
 	        currencies.get(7).defaultValues();
 	        
+	        //test appartenant a l'interval
+	        
+	        assertTrue(currencies.get(6).getName()=="Canadian Dollar");
+	        assertTrue(currencies.get(7).getName()=="Australian Dollar");
+	        assertFalse(currencies.get(7).getName()=="Livre Libanais");
+
 	        Double convertedAmount =MainWindow.convert("Canadian Dollar","US Dollar", currencies,198.0);   
 	        assertEquals(146.52, convertedAmount, 0.01);
 	        convertedAmount = MainWindow.convert("Canadian Dollar","British Pound", currencies,198.0);
@@ -84,10 +82,12 @@ public class TestAssertions  {
 	        convertedAmount =MainWindow.convert("Canadian Dollar", "Australian Dollar", currencies, 1000001.0);
 	        assertEquals(1120001.12, convertedAmount, 0.01);
 	        
-	        
-	        
-	        
-	      //  System.out.println(MainWindow.convert("Canadian Dollar", "Australian Dollar", currencies, -1.0));
+	        //analyse frontiere 
+	        assertFalse("l'amount doit etre entre [0, 1 000 000]",checkamount(MainWindow.convert( currencies.get(6).getName(), currencies.get(7).getName(), currencies, -1.0), currencies.get(6).getExchangeValues().get(currencies.get(7).getShortName())));
+	        assertFalse("l'amount doit etre entre [0, 1 000 000]",checkamount(MainWindow.convert( currencies.get(6).getName(), currencies.get(7).getName(), currencies, 10000001.0), currencies.get(6).getExchangeValues().get(currencies.get(7).getShortName())));
+	        assertTrue(checkamount(MainWindow.convert( currencies.get(6).getName(), currencies.get(7).getName(), currencies, 0.0), currencies.get(6).getExchangeValues().get(currencies.get(7).getShortName())));
+	        assertFalse("l'amount doit etre entre [0, 1 000 000]",checkamount(MainWindow.convert( currencies.get(6).getName(), currencies.get(7).getName(), currencies, 10000001.0), currencies.get(6).getExchangeValues().get(currencies.get(7).getShortName())));
+	        assertTrue(checkamount(MainWindow.convert( currencies.get(6).getName(), currencies.get(7).getName(), currencies, 500.0), currencies.get(6).getExchangeValues().get(currencies.get(7).getShortName())));
 	        
 	   
 	 }
@@ -147,8 +147,19 @@ public class TestAssertions  {
 	    		return true;
 	    	}
 	    }
-
 	    
+	    public boolean checkamount2(double price,double amount) {
+	    	
+	    	if (amount<0) {
+	    		return false; 
+	    	}
+	    	if (amount>1000000 ) {
+	    		return false; 
+	    	}
+	    	else {
+	    		return true;
+	    	}
+	    }
 	   
 //	 	@Test
 //	    public void testInvalidAmount() {

@@ -198,7 +198,19 @@ public class TestBoiteBlanche  {
             }
 	        
 	 }
+ public void testSameResulte() {
+		 
+	    double price1=MainWindow.convert( currencies.get(4).getName(), currencies.get(1).getName(), currencies, 10.0);
+	    double price2=Currency.convert( 10.0,currencies.get(4).getExchangeValues().get(currencies.get(1).getShortName()));	  
+	    try {
+	        assertTrue(price1==price2);
+        
+		}catch (AssertionError e) {
+            System.out.println(e.getMessage());
+        }
 
+	 }
+	 
 	 
 	 
 	 

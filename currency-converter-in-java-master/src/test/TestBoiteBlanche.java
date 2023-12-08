@@ -52,8 +52,23 @@ public class TestBoiteBlanche  {
 			convertedAmount = MainWindow.convert("Canadian Dollar", "Lebanese Pound", currencies, 500.0);
 			assertEquals(0.0, convertedAmount);
 		}
+		@Test
+		public void correctCurrencySourceAndTarget_returnsResult1() {
+			Double result = MainWindow.convert("Euro", "British Pound", currencies, 500.0);
+	        assertEquals("Incorrect conversion of 500 from Euro to British Pound", 355.0, result, 0.0);
+		}
+		@Test
+		public void correctCurrencySourceAndTarget_returnsResult2() {
+			Double result = MainWindow.convert("British Pound", "Euro", currencies, 9000.0);
+	        assertEquals("Incorrect conversion of 9000 from British Pound to Euro", 12690.0, result, 0.0);
+		}
+		@Test
+		public void correctCurrencySourceAndTarget_returnsResult3() {
+			Double result = MainWindow.convert("Swiss Frank", "Chinese Yuan Renminbi", currencies, 9000.0);
+			assertEquals("Incorrect conversion of 500 from Euro to British Pound", 56970.0, result, 0.0);
+		}
 
-	  
+		
 	  @Test
 	 public void testMainConvert() {
 
